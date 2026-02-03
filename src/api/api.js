@@ -34,10 +34,10 @@ api.interceptors.response.use(
 /* -------------------- API Calls -------------------- */
 
 // 🔐 Faculty login sync
-export const addFaculty = (user) =>
+export const addFaculty = (user,facultyID = null) =>
   api.post(`/user/addFaculty/${user.uid}`, {
     role: "faculty",
-    facultyID: "26", // keep as-is (backend controlled)
+    facultyID , // keep as-is (backend controlled)
     email: user.email,
   });
 

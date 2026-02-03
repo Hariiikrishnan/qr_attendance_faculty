@@ -56,7 +56,6 @@ export default function Dashboard() {
       
       // ---------- Sessions ----------
       if (sessionsRes.status === "fulfilled") {
-        console.log(sessionsRes.value?.data.data);
         setSessions(sessionsRes.value?.data?.data || []);
       } else {
         setError(

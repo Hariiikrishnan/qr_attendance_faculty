@@ -8,7 +8,7 @@ import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { addFaculty } from "../api/api";
 import styles from "../layout.module.css";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const provider = new GoogleAuthProvider();
 
@@ -22,8 +22,12 @@ function Login() {
   const [facultyID, setFacultyID] = useState("");
   const [firebaseUser, setFirebaseUser] = useState(null);
 
+  // 🔒 Prevent duplicate login attempts
+  const loginInProgress = useRef(false);
+
   const signInWithGoogle = async () => {
-    if (loading) return;
+    if (loginInProgress.current) return;
+    loginInProgress.current = true;
 
     setErrorMsg("");
     setLoading(true);
@@ -44,18 +48,16 @@ function Login() {
         return;
       }
 
-      // 📡 Sync with backend (FIRST CALL)
+      // 📡 Backend sync (safe even if called multiple times)
       const response = await addFaculty(user);
       const backendUser = response?.data?.data;
 
-      // 🆕 First-time faculty → ask Faculty ID
       if (backendUser?.role === "faculty" && !backendUser?.facultyID) {
         setFirebaseUser(user);
         setShowFacultyModal(true);
         return;
       }
 
-      // ✅ Existing faculty
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
@@ -70,6 +72,7 @@ function Login() {
       );
     } finally {
       setLoading(false);
+      loginInProgress.current = false;
     }
   };
 
@@ -83,7 +86,6 @@ function Login() {
       setLoading(true);
       setErrorMsg("");
 
-      // 📡 Sync again with Faculty ID
       await addFaculty(firebaseUser, facultyID);
 
       setShowFacultyModal(false);
@@ -122,7 +124,6 @@ function Login() {
           </button>
         )}
 
-        {/* 🆕 Faculty ID Modal */}
         {showFacultyModal && (
           <div style={{ marginTop: "20px" }}>
             <h3>Complete Registration</h3>

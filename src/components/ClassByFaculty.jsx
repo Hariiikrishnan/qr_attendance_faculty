@@ -21,6 +21,7 @@ export default function ClassByFaculty({ classes }) {
             }
           >
             <h3>{c.className}</h3>
+            <h3>{c.classId}</h3>
             <p>Total Students: {c.totalStudents}</p>
           </div>
         ))}

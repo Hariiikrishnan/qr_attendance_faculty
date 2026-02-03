@@ -1,3 +1,13 @@
+/* background: linear-gradient(
+  135deg,
+  #7e9dd7,
+  #a3cdd9,
+  #bbc9e4,
+  #7aa4c2,
+  #6595e7
+); */
+
+
 /* ===============================
    GLOBAL BASE (SAFE)
 ================================ */
@@ -260,6 +270,75 @@ body {
   color: #991b1b;
 }
 
+/* ================= CLASS DETAILS PAGE ================= */
+
+.class-details-page {
+  padding: 20px;
+background: linear-gradient(
+  135deg,
+  #7e9dd7,
+  #a3cdd9,
+  #bbc9e4,
+  #7aa4c2,
+  #6595e7
+); 
+  min-height: 100vh;
+}
+
+/* Header */
+.class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Stats row */
+.class-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.class-stats .stat-card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.class-stats .stat-card span {
+  display: block;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.class-stats .stat-card strong {
+  font-size: 20px;
+  color: #0f172a;
+}
+
+/* Student table card */
+.student-table-card h3 {
+  margin-bottom: 12px;
+}
+
+/* Reuse scrollable table pattern */
+.student-table-card .table-shell {
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+/* Sticky header */
+.student-table-card thead th {
+  position: sticky;
+  top: 0;
+  background: #4f46e5;
+  color: white;
+  z-index: 1;
+}
 
 /* ===============================
    GRID & CARDS (REUSED)
@@ -349,6 +428,7 @@ button {
 .primary-btn:hover,
 button:hover {
   background: #4338ca;
+  color: white;
 }
 
 .create-session-btn {
@@ -471,14 +551,7 @@ button:hover {
 
 /* ===================== SESSION DETAILS ===================== */
 
-/* background: linear-gradient(
-  135deg,
-  #7e9dd7,
-  #a3cdd9,
-  #bbc9e4,
-  #7aa4c2,
-  #6595e7
-); */
+
 
 /* ================= SESSION DETAILS (NO PAGE SCROLL) ================= */
 

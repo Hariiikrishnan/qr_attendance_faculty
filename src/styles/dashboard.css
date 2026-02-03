@@ -1,0 +1,848 @@
+/* ===============================
+   GLOBAL BASE (SAFE)
+================================ */
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  margin: 0;
+  background: #f4f6fb;
+}
+
+/* ===============================
+   DASHBOARD LAYOUT (NO SCROLL)
+================================ */
+.dashboard-root {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+
+  /* 🎨 Shared mobile gradient */
+  background: linear-gradient(
+    135deg,
+    #7e9dd7,
+    #a3cdd9,
+    #bbc9e4,
+    #bbc9e4,
+    #7aa4c2,
+    #6595e7
+  );
+}
+
+/* ===============================
+   SIDEBAR
+================================ */
+.sidebar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 28px;
+  color: #1e293b;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar nav button {
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  color: #334155;
+  transition: background 0.2s ease;
+}
+
+.sidebar nav button:hover {
+  background: #eef2ff;
+}
+
+.sidebar nav button.active {
+  background: #e0e7ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+/* ===============================
+   DASHBOARD CONTENT
+================================ */
+.dashboard-content {
+  padding: 24px;
+  overflow: hidden; /* 🚫 NO SCROLL */
+}
+
+/* ===============================
+   HEADINGS
+================================ */
+.dashboard-content h1 {
+  font-size: 26px;
+  margin-bottom: 16px;
+  color: #0f172a;
+}
+
+.dashboard-content h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.dashboard-content h3 {
+  margin-top: 0;
+  color: #475569;
+}
+
+/* ===============================
+   ANALYTICS
+================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.stat-card h3 {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.stat-card p {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e293b;
+  margin:5px;
+}
+
+
+
+/* ===============================
+   RECENT LIST (REUSED)
+================================ */
+.recent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recent-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.recent-item:hover {
+  background: #f8fafc;
+}
+
+.muted {
+  color: #64748b;
+  font-size: 13px;
+}
+/* ================= RECENT SESSIONS (PRO UI) ================= */
+
+.recent-sessions {
+  padding-bottom: 8px;
+}
+
+/* Day group */
+.session-day {
+  margin-top: 14px;
+}
+
+.session-day-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+
+/* List */
+.session-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Row */
+.session-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.session-row:hover {
+  background: #f1f5f9;
+}
+
+/* Left */
+.session-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.class-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.hour-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-weight: 600;
+}
+
+/* Right */
+.session-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* State pill */
+.state-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+
+.state-pill.start_active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.state-pill.end_active {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.state-pill.closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* ===============================
+   GRID & CARDS (REUSED)
+================================ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.card.clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.card.clickable:hover {
+  transform: translateY(-3px);
+}
+
+/* ===============================
+   FORMS (ADD CLASS)
+================================ */
+.card.narrow {
+  max-width: 420px;
+}
+
+input[type="text"],
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+/* ===============================
+   INPUTS FOR ADD CLASS
+================================ */
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  font-size: 14px;
+}
+
+.preview {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #334155;
+}
+
+
+
+/* ===============================
+   BUTTONS
+================================ */
+button {
+  font-family: inherit;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primary-btn,
+button {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primary-btn:hover,
+button:hover {
+  background: #4338ca;
+}
+
+.create-session-btn {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.create-session-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+
+/* ===============================
+   INFO / STATUS TEXT
+================================ */
+.info {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #334155;
+}
+
+
+
+/* ===============================
+   CENTERED STATES
+================================ */
+.centered {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  color: #475569;
+}
+
+/* =========================================================
+   BELOW THIS → OLD SESSION / QR / ATTENDANCE STYLES (UNCHANGED)
+========================================================= */
+
+/* ===== Page Base ===== */
+.session-page {
+  min-height: 100vh;
+  background: #f4f6fb;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Header ===== */
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.session-title {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* ===== Control Panel ===== */
+.control-panel {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== QR DISPLAY MODE ===== */
+.qr-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-wrapper {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.qr-wrapper canvas,
+.qr-wrapper img {
+  width: 320px !important;
+  height: 320px !important;
+}
+
+/* ===== Attendance Table ===== */
+.table-container {
+  max-height: 65vh;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-table thead th {
+  position: sticky;
+  top: 0;
+  background: #737373;
+  color: white;
+  z-index: 2;
+}
+
+/* ===================== SESSION DETAILS ===================== */
+
+/* background: linear-gradient(
+  135deg,
+  #7e9dd7,
+  #a3cdd9,
+  #bbc9e4,
+  #7aa4c2,
+  #6595e7
+); */
+
+/* ================= SESSION DETAILS (NO PAGE SCROLL) ================= */
+
+.session-review {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+ background: linear-gradient(
+  135deg,
+  #7e9dd7,
+  #a3cdd9,
+  #bbc9e4,
+  #7aa4c2,
+  #6595e7
+);
+  overflow: hidden; /* 🚫 page does not scroll */
+}
+
+/* Header */
+.session-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.kpi-bar {
+  display: flex;
+  gap: 12px;
+}
+
+.kpi-bar div {
+  background: white;
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 90px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.kpi-bar strong {
+  font-size: 20px;
+  display: block;
+}
+
+/* Toolbar */
+.session-toolbar {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.session-toolbar .right {
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== SCROLLABLE TABLE ===== */
+.table-shell.scrollable {
+  flex: 1;
+  overflow-y: auto;      /* ✅ ONLY THIS SCROLLS */
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* Sticky table header */
+.attendance-table thead th {
+  position: sticky;
+  top: 0;
+  background: #4f46e5;
+  color: white;
+  z-index: 2;
+}
+
+/* Dense rows */
+.attendance-table.dense td,
+.attendance-table.dense th {
+  padding: 10px 14px;
+}
+
+/* Status badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.badge.green { background: #22c55e; }
+.badge.red { background: #ef4444; }
+/* ================= PROFESSIONAL ATTENDANCE SWITCH ================= */
+
+.attendance-switch {
+  display: inline-flex;
+  background: #f1f5f9;
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+/* Base button */
+.switch-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+/* Hover (inactive) */
+.switch-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Active - Present */
+.switch-btn.active.present {
+  background: #22c55e;
+  color: white;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.35);
+}
+
+/* Active - Absent */
+.switch-btn.active.absent {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.35);
+}
+
+
+/* ===================== SESSION PAGE ===================== */
+
+.session-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #7e9dd7,
+    #a3cdd9,
+    #bbc9e4,
+    #7aa4c2,
+    #6595e7
+  );
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.session-header {
+  margin-bottom: 16px;
+}
+
+.session-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Info / Error */
+.info {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+/* ===================== CONTROL PANEL ===================== */
+
+.control-panel {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 18px;
+  padding: 24px;
+  max-width: 720px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Labels */
+.control-panel label {
+  grid-column: span 2;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Inputs */
+.control-panel select,
+.control-panel input[type="range"] {
+  grid-column: span 2;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+}
+
+/* Create Session Button */
+.control-panel .btn-primary {
+  grid-column: span 2;
+  margin-top: 12px;
+}
+
+/* ===================== QR STAGE ===================== */
+/* ===================== QR DISPLAY ===================== */
+
+.qr-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-frame {
+  background: white;
+  padding: 18px;
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Instruction text */
+.qr-instruction {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.qr-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-wrapper {
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.qr-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.qr-hint {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* QR size override */
+.qr-wrapper canvas,
+.qr-wrapper img {
+  width: 320px !important;
+  height: 320px !important;
+}
+
+/* ===================== SESSION CONTROLS ===================== */
+
+.bottom-controls {
+  margin: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ===================== BUTTONS ===================== */
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    #6595e7,
+    #7e9dd7
+  );
+  color: #ffffff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.95;
+}
+
+.btn-secondary {
+  background: #e5e5e5;
+  color: #111827;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+@media (max-width: 768px) {
+  .control-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .control-panel label,
+  .control-panel select,
+  .control-panel input,
+  .control-panel button {
+    grid-column: span 1;
+  }
+
+  .qr-wrapper canvas,
+  .qr-wrapper img {
+    width: 220px !important;
+    height: 220px !important;
+  }
+}
+
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .dashboard-root {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,129 @@
+/* -------------------- Page Layout -------------------- */
+.page {
+  min-height: 100vh;
+  /* padding: 32px; */
+  max-width: 100vw;
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 🎨 Shared Mobile + Web Brand Gradient */
+  background: linear-gradient(
+    135deg,
+    #7e9dd7,
+    #a3cdd9,
+    #bbc9e4,
+    #bbc9e4,
+    #7aa4c2,
+    #6595e7
+  );
+
+  /* subtle softness for professional look */
+  background-attachment: fixed;
+}
+
+
+/* -------------------- Card -------------------- */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 28px 0 28px ;
+  box-shadow:0 10px 30px rgb(118 121 249 / 78%), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #eef2f7;
+}
+
+/* -------------------- Typography -------------------- */
+.title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.subTitle {
+  font-size: 16px;
+  color: #8e9093;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.footerNote {
+  font-size: 15px;
+  color: #8e8888;
+  margin-top: 18px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* -------------------- Buttons -------------------- */
+.buttonPrimary {
+  width: 100%;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttonPrimary:hover {
+  background: linear-gradient(135deg, #1e4fd8, #1e40af);
+  transform: translateY(-1px);
+}
+
+.buttonPrimary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.buttonSecondary {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.buttonSecondary:hover {
+  background: #e2e8f0;
+}
+
+/* -------------------- Error Box -------------------- */
+.errorBox {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* -------------------- Spinner -------------------- */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin: auto;
+}
+
+/* -------------------- Animations -------------------- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

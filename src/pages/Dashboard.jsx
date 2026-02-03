@@ -1,101 +1,158 @@
 import { useState, useEffect } from "react";
-import api from "../api/api";
 import { useAuth } from "../context/AuthContext";
+import { useFaculty } from "../context/FacultyContext";
+import OverviewPanel from "../components/OverviewPanel.jsx";
+import ClassByFaculty from "../components/ClassByFaculty.jsx";
+import AddClass from "../components/AddClass.jsx";
+import Logout from "../components/Lougout";
+import "../styles/dashboard.css";
 import { useNavigate } from "react-router-dom";
-import Logout from "../components/Lougout.jsx";
+import {
+  fetchClassesByFaculty,
+  fetchRecentSessions,
+} from "../api/api";
 
-
-
-export default function Dashboard({ facultyId }) {
-
-  const { user } = useAuth();
-  const fId = user.email;
-  
-
-
-  const [data, setData] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  
+export default function Dashboard() {
+  const { user, loading: authLoading } = useAuth();
+  const { faculty, loading: facultyLoading } = useFaculty();
   const navigate = useNavigate();
 
+  // ✅ NORMALIZE FACULTY ONCE
+  const facultyData = faculty?.data;
 
-  const getConducted = async () => {
-    if (!fId) return; //  prevent bad API call
+  const [activeTab, setActiveTab] = useState("overview");
 
-    try {
-      const res = await api.get(`/faculty/sessions/all/${fId}`);
+  const [classes, setClasses] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [error, setError] = useState("");
 
-      if (res.data.msg === "Success") {
-        setData(res.data.data);
-        setLoaded(true);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
+  /* ================= DATA FETCH (ONCE) ================= */
   useEffect(() => {
-    
-    getConducted();
-  }, [fId]); // ✅ re-run when facultyId arrives
+    if (!facultyData?.facultyID) return;
 
-  return (
-    <div>
-      <h2>Faculty Dashboard</h2>
+    setLoadingData(true);
+    setError("");
 
-      <h1>Hello {fId}</h1>
+    Promise.allSettled([
+      fetchClassesByFaculty(facultyData.facultyID),
+      fetchRecentSessions(facultyData.facultyID),
+    ]).then(([classesRes, sessionsRes]) => {
 
-      <button onClick={()=> {
-
-        console.log(fId);
-        navigate("/session", {
-          state: { fId }
-        })}
+      // ---------- Classes ----------
+      if (classesRes.status === "fulfilled") {
+        const raw = classesRes.value?.data;
+        const normalizedClasses = Array.isArray(raw)
+        ? raw
+        : raw?.data || [];
         
+        setClasses(normalizedClasses);
       }
+      else {
+        setError(
+          classesRes.reason?.message || "Failed to load classes"
+        );
+      }
+      
+      // ---------- Sessions ----------
+      if (sessionsRes.status === "fulfilled") {
+        console.log(sessionsRes.value?.data.data);
+        setSessions(sessionsRes.value?.data?.data || []);
+      } else {
+        setError(
+          (prev) =>
+            prev ||
+            sessionsRes.reason?.message ||
+            "Failed to load sessions"
+        );
+      }
+
+      setLoadingData(false);
+    });
+  }, [facultyData?.facultyID]);
+
+  /* ================= GUARDS ================= */
+  if (authLoading || facultyLoading || loadingData) {
+    return <div className="centered">Loading dashboard…</div>;
+  }
+
+  if (!user || !facultyData) {
+    return <div className="centered">Unauthorized access</div>;
+  }
+
+  /* ================= UI ================= */
+  return (
+    <div className="dashboard-root">
+      {/* ===== Sidebar ===== */}
+      <aside className="sidebar">
+        <h2 className="brand">Faculty Portal</h2>
+
+        {/* 🔥 PRIMARY ACTION */}
+        <button
+          className="create-session-btn"
+          disabled={classes.length === 0}
+          onClick={() =>
+            navigate("/dashboard/session", {
+              state: { classes },
+            })
+          }
         >
-        Start New Session
-      </button>
-      <Logout/>
-      <p>Previous Sessions By You</p>
+          ➕ Create Session
+        </button>
 
-      {!loaded && <p>Loading...</p>}
+        <nav>
+          <button
+            className={activeTab === "overview" ? "active" : ""}
+            onClick={() => setActiveTab("overview")}
+          >
+            📊 Overview
+          </button>
 
-      {loaded && data.length === 0 && (
-        <p>No sessions found</p>
-      )}
+          <button
+            className={activeTab === "classes" ? "active" : ""}
+            onClick={() => setActiveTab("classes")}
+          >
+            🏫 Classes
+          </button>
 
-      {loaded && data.map((d1, index) => (
-        <div key={index} className="session-card" onClick={()=>navigate(`/session/${d1.sessionId}`,{state:d1} )}>
+          <button
+            className={activeTab === "add" ? "active" : ""}
+            onClick={() => setActiveTab("add")}
+          >
+            ➕ Add Class
+          </button>
+        </nav>
 
-          <div>
+        <Logout />
+      </aside>
 
-          <h3>Auditorium : {d1.audi}</h3>
-          <h3>Session Id : {d1.sessionId}</h3>
-          <h4>Start Time : { new Date(d1.startTime).toLocaleString('en-US',{
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: '2-digit',
-})}</h4>
-          <h4>End Time : { new Date(d1.endTime).toLocaleString('en-US',{
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: '2-digit',
-})}</h4>
+      {/* ===== Main Content ===== */}
+      <main className="dashboard-content">
+        {error && <p className="info">{error}</p>}
 
-</div>
+        {activeTab === "overview" && (
+          <OverviewPanel
+            faculty={facultyData}
+            user={user}
+            sessions={sessions}
+            classes={classes}
+          />
+        )}
 
-<div>
-  <div className="session-info" style={{"backgroundColor": d1.state == "CLOSED" ? "green" : d1.state == "START_ACTIVE" ? "yellow" : "orange" }}>
- <p>{d1.state}</p>
-    </div>
-  </div>
-        </div>
-      ))}
+        {activeTab === "classes" && (
+          <ClassByFaculty classes={classes} />
+        )}
+
+        {activeTab === "add" && (
+          <AddClass
+            faculty={facultyData}
+            user={user}
+            onClassAdded={(newClass) =>
+              setClasses((prev) => [...prev, newClass])
+            }
+          />
+        )}
+      </main>
     </div>
   );
 }

@@ -86,6 +86,32 @@ export default function AddClass({ faculty, user, onClassAdded }) {
         </p>
       )}
 
+      <div className="info-card">
+  <h4>📄 Excel File Requirements</h4>
+
+  <p>
+    Please upload an <strong>.xlsx</strong> file with the following columns:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Student Register Number</strong>  
+      <br />
+      Accepted names: <code>RegNo</code>, <code>Reg No</code>, <code>Register No</code>
+    </li>
+    <li>
+      <strong>Student Name</strong>  
+      <br />
+      Accepted names: <code>Name</code>
+    </li>
+  </ul>
+
+  <p className="hint">
+    ⚠️ Register Number is mandatory for attendance mapping.
+  </p>
+</div>
+
+
       <input
         type="file"
         accept=".xlsx"

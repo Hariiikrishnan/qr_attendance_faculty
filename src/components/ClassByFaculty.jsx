@@ -17,7 +17,7 @@ export default function ClassByFaculty({ classes }) {
             key={c.classId}
             className="card class-card"
             onClick={() =>
-              navigate(`/dashboard/class/${c.classId}`)
+              navigate(`/dashboard/class/`+c.classId)
             }
           >
             <h3>{c.className}</h3>

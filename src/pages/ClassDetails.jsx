@@ -17,7 +17,8 @@ export default function ClassDetails() {
       .finally(() => setLoading(false));
   }, [classId]);
 
-  if (loading) return <Loader text="Loading class details…" />;
+
+  if (loading) return <div className="centered">Loading Class Details..</div>;
   if (!cls) return <div className="card">Class not found</div>;
 
   return (

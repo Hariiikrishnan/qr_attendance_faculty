@@ -6,10 +6,10 @@
 
 
 import { useState } from "react";
-import api from "../api/api";
+import api from "../../api/api";
 import QRDisplay from "../components/QRDisplay";
-import { useAuth } from "../context/AuthContext";
-import { useFaculty } from "../context/FacultyContext";
+import { useAuth } from "../../context/AuthContext";
+import { useFaculty } from "../../context/FacultyContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
 /* ===================== BLOCKS ===================== */

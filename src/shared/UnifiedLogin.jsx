@@ -7,12 +7,13 @@ import {
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { addFaculty } from "../api/api";
-import styles from "../layout.module.css";
+
 import { useState, useRef } from "react";
+import styles from "../layout.module.css";
 
 const provider = new GoogleAuthProvider();
 
-function Login() {
+export default function UnifiedLogin() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -22,49 +23,57 @@ function Login() {
   const [facultyID, setFacultyID] = useState("");
   const [firebaseUser, setFirebaseUser] = useState(null);
 
-  // 🔒 Prevent duplicate login attempts
+  // 🔒 Prevent double popup
   const loginInProgress = useRef(false);
 
-  const signInWithGoogle = async () => {
+  const signIn = async () => {
     if (loginInProgress.current) return;
     loginInProgress.current = true;
 
-    setErrorMsg("");
     setLoading(true);
+    setErrorMsg("");
 
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      const email = user.email || "";
 
-      // 🔒 Email restriction
-      const allowed =
-        user.email?.endsWith("@sastra.edu") ||
-        user.email === "therihari36@gmail.com";
+      /* ===================== FACULTY ===================== */
+      if (
+        email.endsWith("@sastra.edu") ||
+        email === "therihari36@gmail.com"
+      ) {
+        const response = await addFaculty(user);
+        const backendUser = response?.data?.data;
 
-      if (!allowed) {
-        setErrorMsg("Only official SASTRA email accounts are allowed.");
-        await deleteUser(user);
-        await signOut(auth);
+        if (
+          backendUser?.role === "faculty" &&
+          !backendUser?.facultyID
+        ) {
+          setFirebaseUser(user);
+          setShowFacultyModal(true);
+          return;
+        }
+
+        navigate("/dashboard", { replace: true });
         return;
       }
 
-      // 📡 Backend sync (safe even if called multiple times)
-      const response = await addFaculty(user);
-      const backendUser = response?.data?.data;
-
-      if (backendUser?.role === "faculty" && !backendUser?.facultyID) {
-        setFirebaseUser(user);
-        setShowFacultyModal(true);
+      /* ===================== STUDENT ===================== */
+      if (email.endsWith("@sastra.ac.in")) {
+        navigate("/student/home", { replace: true });
         return;
       }
 
-      navigate("/dashboard");
+      /* ===================== BLOCK ===================== */
+      setErrorMsg(
+        "Only official SASTRA faculty or student accounts are allowed."
+      );
+      await deleteUser(user);
+      await signOut(auth);
     } catch (err) {
       console.error("Login error:", err);
-
-      if (auth.currentUser) {
-        await signOut(auth);
-      }
+      if (auth.currentUser) await signOut(auth);
 
       setErrorMsg(
         err?.response?.data?.message ||
@@ -87,9 +96,8 @@ function Login() {
       setErrorMsg("");
 
       await addFaculty(firebaseUser, facultyID);
-
       setShowFacultyModal(false);
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       console.error(err);
       setErrorMsg("Failed to save Faculty ID. Try again.");
@@ -101,9 +109,9 @@ function Login() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h2 className={styles.title}>Faculty Portal for QR Attendance</h2>
+        <h2 className={styles.title}>QR Attendance System</h2>
         <p className={styles.subTitle}>
-          Sign in using your official college email
+          Sign in with your official college Google account
         </p>
 
         {errorMsg && (
@@ -112,8 +120,8 @@ function Login() {
 
         {!showFacultyModal && (
           <button
-            className={`${styles.buttonPrimary} loginBtn`}
-            onClick={signInWithGoogle}
+            className={styles.buttonPrimary}
+            onClick={signIn}
             disabled={loading}
           >
             {loading ? (
@@ -125,8 +133,8 @@ function Login() {
         )}
 
         {showFacultyModal && (
-          <div style={{ marginTop: "20px" }}>
-            <h3>Complete Registration</h3>
+          <div style={{ marginTop: 20 }}>
+            <h3>Complete Faculty Registration</h3>
             <p>Please enter your Faculty ID</p>
 
             <input
@@ -136,9 +144,8 @@ function Login() {
               onChange={(e) => setFacultyID(e.target.value)}
               style={{
                 width: "100%",
-                padding: "10px",
-                marginTop: "10px",
-                marginBottom: "10px",
+                padding: 10,
+                margin: "10px 0",
               }}
             />
 
@@ -153,11 +160,9 @@ function Login() {
         )}
 
         <p className={styles.footerNote}>
-          Authorized faculty access only
+          Authorized SASTRA users only
         </p>
       </div>
     </div>
   );
 }
-
-export default Login;

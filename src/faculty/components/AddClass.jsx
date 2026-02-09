@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addClass } from "../api/api";
+import { addClass } from "../../api/api";
 
 const DEPARTMENTS = ["CSE", "ECE", "EEE", "MECH", "CIVIL","MCA"];
 const YEARS = ["1", "2", "3", "4"];

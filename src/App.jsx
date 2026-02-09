@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Session from "./pages/Session";
-import SessionDetails from "./pages/SessionDetails";
-import ClassDetails from "./pages/ClassDetails";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./faculty/pages/Login";
+import Dashboard from "./faculty/pages/Dashboard";
+import Session from "./faculty/pages/Session";
+import SessionDetails from "./faculty/pages/SessionDetails";
+import ClassDetails from "./faculty/pages/ClassDetails";
+import StudentRoutes from "./student/StudentRoutes.jsx";
+import ProtectedRoute from "./shared/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { FacultyProvider } from "./context/FacultyContext";
+import UnifiedLogin from "./shared/UnifiedLogin";
+
 
 function App() {
   return (
@@ -17,7 +20,7 @@ function App() {
         <Routes>
 
           {/* Public */}
-          <Route path="/login" element={<Login />} />
+<Route path="/login" element={<UnifiedLogin />} />
 
           {/* Protected */}
           <Route
@@ -53,6 +56,9 @@ function App() {
             <ClassDetails />
             </ProtectedRoute>
             } />
+
+            {/* Student PWA */}
+            <Route path="/student/*" element={<StudentRoutes />} />
 
 
           {/* Default */}

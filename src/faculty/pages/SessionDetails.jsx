@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import api from "../api/api";
+import api from "../../api/api";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { useParams, useNavigate } from "react-router-dom";
-import "../styles/dashboard.css";
+import "../../styles/dashboard.css";
 
 export default function SessionDetails() {
   const { sessionId } = useParams();

@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchClassDetails } from "../api/api";
+import { fetchClassDetails } from "../../api/api";
 import Loader from "../components/Loader";
-import "../styles/dashboard.css";
+import "../../styles/dashboard.css"
 
 export default function ClassDetails() {
   const { classId } = useParams();

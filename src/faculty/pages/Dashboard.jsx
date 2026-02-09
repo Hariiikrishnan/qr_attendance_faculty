@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useFaculty } from "../context/FacultyContext";
+import { useAuth } from "../../context/AuthContext";
+import { useFaculty } from "../../context/FacultyContext";
 import OverviewPanel from "../components/OverviewPanel.jsx";
 import ClassByFaculty from "../components/ClassByFaculty.jsx";
 import AddClass from "../components/AddClass.jsx";
 import Logout from "../components/Lougout";
-import "../styles/dashboard.css";
+import "../../styles/dashboard.css";
 import { useNavigate } from "react-router-dom";
 import {
   fetchClassesByFaculty,
   fetchRecentSessions,
-} from "../api/api";
+} from "../../api/api";
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();

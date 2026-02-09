@@ -53,7 +53,6 @@ button:focus-visible {
 
 
 
-
 .session-card{
   background-color: rgb(216, 216, 216);
   margin:25px;
@@ -85,5 +84,14 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

@@ -106,6 +106,7 @@ export default function StudentHome({ user }) {
     const res = await getAllAttended({ regNo });
     setAttendance(res.success ? res.data : []);
     setLoading(false);
+    // console.log(res.data);
   };
 
   /* ===================== LOCATION + SCAN ===================== */
@@ -174,6 +175,8 @@ export default function StudentHome({ user }) {
   };
 
   const map = attendanceMap();
+
+  console.log(map);
 
   /* ===================== UI ===================== */
 

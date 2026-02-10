@@ -19,7 +19,7 @@ export default defineConfig({
         theme_color: "#0d6efd",
         background_color: "#ffffff",
         display: "standalone",
-        start_url: "/",
+        start_url: "/student/home",
         icons: [
           {
             src: "/pwa-192x192.png",

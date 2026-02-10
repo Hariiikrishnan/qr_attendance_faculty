@@ -210,7 +210,7 @@ export default function StudentHome({ user }) {
         <button style={styles.logout} onClick={signOut}>
           Logout
         </button>
-          {!canInstall && (
+          {canInstall && (
   <button
     style={styles.installBtn}
     onClick={promptInstall}

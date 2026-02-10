@@ -5,11 +5,14 @@ import { AppColors, AppSpacing, AppRadius } from "../../shared/constants";
 import { getAllAttended } from "../services/apiService";
 import { getCurrentLocation } from "../services/locationService";
 import { signOut } from "../services/authService";
+
+import { usePWAInstall } from "../../shared/usePWAInstall";
+import IOSInstallBanner from "../../shared/IOSInstallBanner";
 const styles = {
   page: {
     minHeight: "100vh",
     background:
-      "linear-gradient(135deg,#7E9DD7,#A3CDD9,#BBC9E4)",
+    "linear-gradient(135deg,#7E9DD7,#A3CDD9,#BBC9E4)",
     padding: AppSpacing.md,
   },
   header: {
@@ -83,6 +86,16 @@ const styles = {
     borderRadius: 8,
     color: "#991b1b",
   },
+  installBtn: {
+  padding: "10px 16px",
+  borderRadius: 20,
+  background: "#0d6efd",
+  color: "#fff",
+  border: "none",
+  fontSize: 14,
+  zIndex: 10,
+},
+
 };
 
 
@@ -91,10 +104,11 @@ export default function StudentHome({ user }) {
   const [attendance, setAttendance] = useState([]);
   const [gettingLocation, setGettingLocation] = useState(false);
   const [error, setError] = useState("");
-
+  
   const navigate = useNavigate();
   const regNo = user.email.substring(0, 9);
-
+  const { canInstall, promptInstall } = usePWAInstall();
+  
   useEffect(() => {
     fetchAttendance();
   }, []);
@@ -196,8 +210,17 @@ export default function StudentHome({ user }) {
         <button style={styles.logout} onClick={signOut}>
           Logout
         </button>
-      </header>
+          {!canInstall && (
+  <button
+    style={styles.installBtn}
+    onClick={promptInstall}
+  >
+    📲
+  </button>
+)}
 
+      </header>
+      <IOSInstallBanner/>
       {error && <div style={styles.error}>{error}</div>}
 
       {loading ? (

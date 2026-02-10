@@ -13,6 +13,13 @@ export default defineConfig({
     basicSsl(), // 👈 enables HTTPS
     VitePWA({
       registerType: "autoUpdate",
+      scope:"/",
+      strategies:"generateSW",
+      injectRegister: "auto",
+      workbox: {
+        navigateFallback: "/index.html",
+        globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      },
       manifest: {
         name: "Auditorium Attendance",
         short_name: "Attendance",

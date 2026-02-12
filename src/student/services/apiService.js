@@ -1,7 +1,7 @@
 // src/services/apiService.js
 
-// const BASE_URL = "http://10.208.14.196:3000";
-const BASE_URL = "/api";
+const BASE_URL = "http://10.208.14.196:3000";
+// const BASE_URL = "/api";
 // const BASE_URL = "https://qr-attendance-backend-pr5h.onrender.com";
 
 const HEADERS = {

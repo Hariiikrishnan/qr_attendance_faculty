@@ -1,10 +1,12 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useLocation} from "react-router-dom";
 
 import { AppColors, AppSpacing, AppRadius } from "../../shared/constants";
 
-export default function SemesterAttendance({ attendanceMap }) {
+export default function SemesterAttendance() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const attendanceMap = location.state?.attendanceMap || {};
 
   /* ===================== DATE HELPERS ===================== */
 

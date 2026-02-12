@@ -88,10 +88,41 @@ button:focus-visible {
 }
 
 
-
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
+
+
+
+
+/* Global QR Fixes */
+
+#qr-shaded-region {
+  display: none !important;
+}
+
+/* 
+#qr-reader {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  inset: 0 !important;
+}
+#qr-reader > div {
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+}
+#qr-reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important; 
+}
+ */
+
+ #qr-reader video{
+  border-radius: 30px;
+ }
+ 

@@ -8,6 +8,10 @@ import { signOut } from "../services/authService";
 
 import { usePWAInstall } from "../../shared/usePWAInstall";
 import IOSInstallBanner from "../../shared/IOSInstallBanner";
+import AndroidInstallBanner from "../../shared/AndroidInstallBanner";
+
+
+
 const styles = {
   page: {
     minHeight: "100vh",
@@ -190,7 +194,7 @@ export default function StudentHome({ user }) {
 
   const map = attendanceMap();
 
-  console.log(map);
+  // console.log(map);
 
   /* ===================== UI ===================== */
 
@@ -221,13 +225,30 @@ export default function StudentHome({ user }) {
 
       </header>
       <IOSInstallBanner/>
+      <AndroidInstallBanner/>
+
+      
       {error && <div style={styles.error}>{error}</div>}
 
       {loading ? (
         <div style={styles.loader}>Loading…</div>
       ) : (
         <>
-          <h2 style={styles.section}>Last 10 Days Attendance</h2>
+         <div style={{
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+         }} >
+           <h2 style={styles.section}>Last 10 Days Attendance</h2>
+           <p style={{
+            marginTop:"24px",
+            color:"blue",
+            textDecoration:"underline",
+           }} onClick={()=>
+           navigate("/student/semester",{
+            state: { attendanceMap: map },
+            })}>See All</p>
+         </div>
 
           {Array.from({ length: 10 }).map((_, i) => {
             const date = new Date();

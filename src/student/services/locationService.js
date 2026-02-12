@@ -5,33 +5,13 @@
 
 export function getCurrentLocation() {
   return new Promise((resolve, reject) => {
-    // 1️⃣ Check browser support
     if (!("geolocation" in navigator)) {
-      reject({
+      return reject({
         code: "GEOLOCATION_NOT_SUPPORTED",
-        message: "Geolocation not supported by this browser",
+        message: "Geolocation not supported",
       });
-      return;
     }
 
-    // 2️⃣ Check permission state (best-effort)
-    if (navigator.permissions) {
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then((result) => {
-          if (result.state === "denied") {
-            reject({
-              code: "LOCATION_PERMISSION_DENIED",
-              message: "Location permission denied",
-            });
-          }
-        })
-        .catch(() => {
-          // ignore – some browsers (iOS) don't fully support this
-        });
-    }
-
-    // 3️⃣ Get current position (low power, one-time)
     navigator.geolocation.getCurrentPosition(
       (position) => {
         resolve({
@@ -42,21 +22,21 @@ export function getCurrentLocation() {
       },
       (error) => {
         switch (error.code) {
-          case error.PERMISSION_DENIED:
+          case 1:
             reject({
               code: "LOCATION_PERMISSION_DENIED",
               message: "Location permission denied",
             });
             break;
 
-          case error.POSITION_UNAVAILABLE:
+          case 2:
             reject({
               code: "LOCATION_UNAVAILABLE",
               message: "Location unavailable",
             });
             break;
 
-          case error.TIMEOUT:
+          case 3:
             reject({
               code: "LOCATION_TIMEOUT",
               message: "Location request timed out",
@@ -71,8 +51,8 @@ export function getCurrentLocation() {
         }
       },
       {
-        enableHighAccuracy: false, // 🔥 matches LocationAccuracy.low
-        timeout: 15000,
+        enableHighAccuracy: true,   // 🔥 Important for Android
+        timeout: 10000,
         maximumAge: 0,
       }
     );

@@ -93,7 +93,10 @@ button:focus-visible {
     transform: rotate(360deg);
   }
 }
-
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
 
 
@@ -123,6 +126,6 @@ button:focus-visible {
  */
 
  #qr-reader video{
-  border-radius: 30px;
+  border-radius: 0 0 30px 30px;
  }
  

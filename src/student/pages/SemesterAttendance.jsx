@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate ,useLocation} from "react-router-dom";
-
+import { ArrowLeft } from "lucide-react";
 import { AppColors, AppSpacing, AppRadius } from "../../shared/constants";
 
 export default function SemesterAttendance() {
@@ -44,7 +44,7 @@ export default function SemesterAttendance() {
     <div style={styles.page}>
       <header style={styles.appBar}>
         <button style={styles.backBtn} onClick={() => navigate(-1)}>
-          ←
+          <ArrowLeft/>
         </button>
         <h2 style={styles.title}>Semester Attendance</h2>
       </header>

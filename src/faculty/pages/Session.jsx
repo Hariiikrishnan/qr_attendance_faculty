@@ -19,8 +19,10 @@ const BLOCKS = [
   { id: "C", name: "TIFAC", lat: 10.7289024, lng: 79.0199675 },
   { id: "D", name: "KRC", lat: 10.7285683, lng: 79.0203898 },
   { id: "Z", name: "HOME", lat: 10.768724, lng: 79.1025933 },
+  { id: "F", name: "DD", lat: 11.1282620, lng: 77.3474270 },
 ];
 // 10.768724,79.1025933
+// 11.1282620, 77.3474270
 export default function Session() {
   const navigate = useNavigate();
   const location = useLocation();

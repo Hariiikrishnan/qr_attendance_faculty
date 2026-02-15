@@ -3,6 +3,8 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AppColors } from "../../shared/constants";
 import { markAttendance } from "../services/apiService";
+import { ArrowLeft, Loader2, CheckCircle2, XCircle,OctagonX } from "lucide-react";
+
 
 const SCAN_BOX_SIZE = 260;
 
@@ -17,7 +19,7 @@ export default function ScanQR({ user }) {
   const [processing, setProcessing] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
   const [result, setResult] = useState(null);
-  const [confirmData, setConfirmData] = useState(null);
+
   const [zoom, setZoom] = useState(1);
 
   const locationData = locationHook.state?.location;
@@ -120,51 +122,70 @@ useEffect(() => {
 
   // Scan Success
   const onScanSuccess = useCallback((decodedText) => {
-    if (hasScanned || processing) return;
+  if (hasScanned || processing) return;
 
-    setHasScanned(true);
+  setHasScanned(true);
 
-    try {
-      if (!isPausedRef.current) {
-        isPausedRef.current = true;
-        qrRef.current?.pause();
-      }
-
-      const decoded = JSON.parse(decodedText);
-      const payload = decoded?.data?.payload;
-      const signature = decoded?.data?.signature;
-
-      if (!payload || !signature) throw new Error();
-
-      requestAnimationFrame(() => {
-        setConfirmData({ payload, signature });
-      });
-
-    } catch {
-      showResult(false, "Invalid QR Code");
+  try {
+    if (!isPausedRef.current) {
+      isPausedRef.current = true;
+      qrRef.current?.pause();
     }
-  }, [hasScanned, processing]);
 
-  const confirmAttendance = useCallback(async () => {
-    if (!confirmData) return;
+    const decoded = JSON.parse(decodedText);
+    const payload = decoded?.data?.payload;
+    const signature = decoded?.data?.signature;
 
-    setConfirmData(null);
+    if (!payload || !signature) throw new Error();
+
+    // Call async function separately
+    processAttendance(payload, signature);
+
+  } catch {
+    showResult(false, "Invalid QR Code");
+  }
+}, [hasScanned, processing]);
+
+const processAttendance = async (payload, signature) => {
+  try {
     setProcessing(true);
 
-    try {
-      const res = await markAttendance({
-        payload: confirmData.payload,
-        signature: confirmData.signature,
-        lat: locationData.lat,
-        lng: locationData.lng,
-        regNo: user.email.substring(0, 9),
-      });
+    const res = await markAttendance({
+      payload,
+      signature,
+      lat: locationData.lat,
+      lng: locationData.lng,
+      regNo: user.email.substring(0, 9),
+    });
 
-      handleResult(res);
-    } catch {
-      showResult(false, "Server error");
-    }
-  }, [confirmData, locationData, user]);
+    handleResult(res);
+  } catch {
+    showResult(false, "Server error");
+  }
+};
+
+
+
+  // const confirmAttendance = useCallback(async () => {
+  //   if (!confirmData) return;
+
+  //   setConfirmData(null);
+  //   setProcessing(true);
+
+  //   try {
+  //     const res = await markAttendance({
+  //       payload: confirmData.payload,
+  //       signature: confirmData.signature,
+  //       lat: locationData.lat,
+  //       lng: locationData.lng,
+  //       regNo: user.email.substring(0, 9),
+  //     });
+
+  //     handleResult(res);
+  //   } catch {
+  //     showResult(false, "Server error");
+  //   }
+  // }, [confirmData, locationData, user]);
 
   const handleResult = (res) => {
     const success = !!res?.success;
@@ -175,11 +196,15 @@ useEffect(() => {
 
     showResult(success, message);
   };
+const showResult = (success, message) => {
+  setProcessing(false);
+  setResult({ success, message });
 
-  const showResult = (success, message) => {
-    setProcessing(false);
-    setResult({ success, message });
-  };
+  setTimeout(() => {
+    resetScan();
+  }, 10000);
+};
+
 
   const resetScan = async () => {
     setResult(null);
@@ -218,7 +243,7 @@ useEffect(() => {
   });
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#000" }}>
+    <div style={{ position: "fixed", inset: 0, background: "linear-gradient(135deg,#7E9DD7,#A3CDD9,#BBC9E4)" }}>
       
       <div id="qr-reader" style={{ width: "100%", height: "100%" }} />
 
@@ -267,20 +292,77 @@ useEffect(() => {
       </div>
 
       {/* CONFIRM MODAL */}
-      { confirmData &&  (
-        <ModalFade>
-          <h2>Confirm Attendance</h2>
-          <p>Do you want to mark attendance?</p>
-          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-            <button onClick={confirmAttendance}>Confirm</button>
-            <button onClick={cancelConfirm}>Cancel</button>
-          </div>
-        </ModalFade>
-      )}
+   
   // backgroundColor:"#e47f7fa3",
             // backgroundColor:"#80d47d",
+
+
       {/* RESULT MODAL */}
-     
+      {(processing || result) && (
+  <ModalFade>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center",width:"100%",height:"90%",justifyContent:"space-between" }}>
+
+      {/* LOADING STATE */}
+      {processing && (
+        <>
+          <Loader2
+            size={35}
+            style={{
+              animation: "spin 1s linear infinite",
+              color: "#4A90E2"
+            }}
+          />
+            <p>Don't close the window</p>
+          <h2 style={{marginTop:20,width:"100%",padding:"15px",backgroundColor:"#7b00f9",textAlign:"center",color:"white",borderRadius:"16px",fontSize:"18px"}} >Marking Attendance</h2>
+        </>
+      )}
+
+      {/* SUCCESS / FAILURE */}
+      {!processing && result && (
+        <>
+        <div style={{width:"100%",display:"flex",justifyContent:"end"}}>
+        <button onClick=
+        { async() => {
+           await stopScanner();
+          navigate("/student")
+        } }  
+        style={{
+          backgroundColor:"red",
+          padding:"10px",
+          borderRadius:"50%",
+          display:"flex",
+          alignItems:"center"
+        }}
+        ><OctagonX size={22}/></button>
+        </div>
+          {result.success ? (
+            <CheckCircle2
+              size={80}
+              style={{
+                color: "#22c55e",
+                animation: "pop 0.4s ease"
+              }}
+            />
+          ) : (
+            <XCircle
+              size={80}
+              style={{
+                color: "#ef4444",
+                animation: "pop 0.4s ease"
+              }}
+            />
+          )}
+          <p>{result.message}</p>
+          <h2 style={{marginTop:20,width:"100%",padding:"15px",backgroundColor:"#7b00f9",textAlign:"center",color:"white",borderRadius:"16px",fontSize:"18px" }}  >
+            {result.success ? "Attendance Marked" : "Failed"}
+          </h2>
+        </>
+      )}
+    </div>
+  </ModalFade>
+)}
+
+{/*      
       {result && (
         <ModalFade>
             <div style={{
@@ -314,7 +396,7 @@ useEffect(() => {
           <p>{result.message}</p>
           <button onClick={resetScan}>Done</button>
         </ModalFade>
-      )}
+      )} */}
 
       {/* BACK BUTTON (No blur for performance) */}
       <button
@@ -339,7 +421,7 @@ useEffect(() => {
           boxShadow: "0 4px 15px rgba(0,0,0,0.3)"
         }}
       >
-        Back
+        <ArrowLeft />
       </button>
     </div>
   );
@@ -351,12 +433,13 @@ function ModalFade({ children }) {
       style={{
         position: "absolute",
         // inset: 0,
-        background: "rgba(0,0,0,0.5)",
+        background: "rgba(0,0,0,0)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        position:"absolute",
-        bottom:"5px",
+        // position:"absolute",
+        bottom:"0px",
+        height:"350px",
         zIndex:"9999",
         width:"100%"
       }}
@@ -364,14 +447,15 @@ function ModalFade({ children }) {
       <div
         style={{
           background: "#fff",
-          padding: 24,
+          padding: "12px 24px",
              display: "flex",
              flexDirection:"column",
         alignItems: "center",
         justifyContent: "center",
-          borderRadius: 16,
+          borderRadius: "32px 32px 0 0",
           textAlign: "center",
-          width: "80%",
+          width: "100%",
+          height:"100%",
         }}
       >
         {children}

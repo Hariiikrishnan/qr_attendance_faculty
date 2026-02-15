@@ -1,5 +1,5 @@
 import { useAndroidInstallHelper } from "./useAndroidInstallHelper";
-
+import { X } from "lucide-react";
 export default function AndroidInstallBanner() {
   const { show, dismiss } = useAndroidInstallHelper();
 
@@ -9,7 +9,16 @@ export default function AndroidInstallBanner() {
     <div style={styles.wrapper}>
       <div style={styles.card}>
         <div style={styles.text}>
+          <div style={{
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-between",
+          }}>
           <strong>Install this app</strong>
+        <button style={styles.close} onClick={dismiss}>
+         <X size={18}/>
+        </button>
+          </div>
           <p>
             Tap <strong>⋮</strong> (top right) and select
             <br />
@@ -17,9 +26,6 @@ export default function AndroidInstallBanner() {
           </p>
         </div>
 
-        <button style={styles.close} onClick={dismiss}>
-          ✕
-        </button>
       </div>
     </div>
   );
@@ -51,7 +57,9 @@ const styles = {
     lineHeight: 1.4,
   },
   close: {
+    padding:"5px",
     background: "none",
+    color:"black",
     border: "none",
     fontSize: 16,
     cursor: "pointer",

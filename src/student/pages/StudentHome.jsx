@@ -9,6 +9,11 @@ import { signOut } from "../services/authService";
 import { usePWAInstall } from "../../shared/usePWAInstall";
 import IOSInstallBanner from "../../shared/IOSInstallBanner";
 import AndroidInstallBanner from "../../shared/AndroidInstallBanner";
+import { LogOut,Loader2,ScanQrCode } from "lucide-react";
+
+
+
+
 
 
 
@@ -34,7 +39,7 @@ const styles = {
   logout: {
     marginLeft: "auto",
     background: "#fff",
-    borderRadius: 20,
+    borderRadius: 10,
     border: "none",
     padding: "6px 12px",
     color: "red",
@@ -78,7 +83,7 @@ const styles = {
     width: 72,
     height: 72,
     borderRadius: "50%",
-    background: AppColors.accentBlue,
+    background: "linear-gradient(135deg, rgb(233 96 232), rgb(84 34 255), rgb(233, 96, 232))",
     color: "#fff",
     border: "3px solid white",
     fontSize: 28,
@@ -99,6 +104,13 @@ const styles = {
   fontSize: 14,
   zIndex: 10,
 },
+loader:{
+    height: "500px",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+}
 
 };
 
@@ -212,7 +224,7 @@ export default function StudentHome({ user }) {
         </div>
 
         <button style={styles.logout} onClick={signOut}>
-          Logout
+          <LogOut size={20} />
         </button>
           {canInstall && (
   <button
@@ -231,7 +243,13 @@ export default function StudentHome({ user }) {
       {error && <div style={styles.error}>{error}</div>}
 
       {loading ? (
-        <div style={styles.loader}>Loading…</div>
+        <div style={styles.loader} >
+           <Loader2 
+          style={{
+    animation: "spin 1s linear infinite",
+    
+  }} size={40} />
+        </div>
       ) : (
         <>
          <div style={{
@@ -299,7 +317,10 @@ export default function StudentHome({ user }) {
         style={styles.fab}
         onClick={prepareLocationAndScan}
       >
-        {gettingLocation ? "…" : "📷"}
+        {gettingLocation ? <Loader2 
+          style={{
+    animation: "spin 1s linear infinite",
+  }} size={24} /> : <ScanQrCode size={35} />}
       </button>
     </div>
   );

@@ -1,4 +1,6 @@
 import { useIOSInstallHelper } from "./useIOSInstallHelper";
+import { X } from "lucide-react";
+
 
 export default function IOSInstallBanner() {
   const { show, dismiss } = useIOSInstallHelper();
@@ -9,7 +11,16 @@ export default function IOSInstallBanner() {
     <div style={styles.wrapper}>
       <div style={styles.card}>
         <div style={styles.text}>
-          <strong>Install this app</strong>
+           <div style={{
+                      display:"flex",
+                      alignItems:"center",
+                      justifyContent:"space-between",
+                    }}>
+                    <strong>Install this app</strong>
+                  <button style={styles.close} onClick={dismiss}>
+                   <X size={18}/>
+                  </button>
+                    </div>
           <p>
             Tap <span style={styles.icon}>⎋</span> Share and then
             <br />
@@ -17,9 +28,6 @@ export default function IOSInstallBanner() {
           </p>
         </div>
 
-        <button style={styles.close} onClick={dismiss}>
-          ✕
-        </button>
       </div>
     </div>
   );
@@ -55,6 +63,8 @@ const styles = {
   },
   close: {
     background: "none",
+    color:"black",
+    padding:"5px",
     border: "none",
     fontSize: 16,
     cursor: "pointer",

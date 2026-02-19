@@ -1,22 +1,18 @@
 import { QRCodeSVG } from "qrcode.react";
 
-export default function QRDisplay({ data }) {
+export default function QRDisplay({ data, size = 300 }) {
   if (!data) return null;
 
   return (
-    <div className="qr-display">
-      <div className="qr-frame">
-        <QRCodeSVG
-          value={JSON.stringify(data)}
-          size={260}
-          level="H"
-          includeMargin={true}
-        />
-      </div>
-
-      <p className="qr-instruction">
-        Scan this QR code
-      </p>
-    </div>
+    <QRCodeSVG
+      value={JSON.stringify(data)}
+      size={size}
+      level="H"
+      includeMargin={false}   // ❗ remove extra white border
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    />
   );
 }

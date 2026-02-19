@@ -563,8 +563,10 @@ button:hover {
 
 .qr-wrapper canvas,
 .qr-wrapper img {
-  width: 320px !important;
-  height: 320px !important;
+  width: 85vmin !important;
+  height: 85vmin !important;
+  max-width: 1000px;
+  max-height: 1000px;
 }
 
 /* ===== Attendance Table ===== */

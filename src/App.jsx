@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./faculty/pages/Login";
+
 import Dashboard from "./faculty/pages/Dashboard";
 import Session from "./faculty/pages/Session";
 import SessionDetails from "./faculty/pages/SessionDetails";
@@ -20,7 +20,7 @@ function App() {
         <Routes>
 
           {/* Public */}
-<Route path="/login" element={<UnifiedLogin />} />
+      <Route path="/login" element={<UnifiedLogin />} />
 
           {/* Protected */}
           <Route

@@ -172,7 +172,10 @@ export default function StudentHome({ user }) {
   const attendanceMap = () => {
     const map = {};
 
+    console.log(attendance);
+
     attendance.forEach((item) => {
+      console.log(item);
       let date;
 
       const raw =

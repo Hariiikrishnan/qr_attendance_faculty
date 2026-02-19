@@ -8,6 +8,7 @@
 import { useState } from "react";
 import api from "../../api/api";
 import QRDisplay from "../components/QRDisplay";
+import FullscreenQR from "../components/FullscreenQR.jsx";
 import { useAuth } from "../../context/AuthContext";
 import { useFaculty } from "../../context/FacultyContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -66,6 +67,7 @@ export default function Session() {
     );
   }
 
+
   /* ===================== ACTIONS ===================== */
 
   const startSession = async () => {
@@ -122,6 +124,8 @@ export default function Session() {
       console.log(res);
 
       setQrData(res.data);
+
+      console.log("QR LENGTH:", JSON.stringify(qrData.data).length);
     } catch (err) {
       setMessage(err.message || "Failed to generate QR");
     } finally {
@@ -220,7 +224,7 @@ export default function Session() {
       {session && (
         <>
           <div className="qr-stage">
-            {qrData && (
+            {/* {qrData && (
               <div className="qr-wrapper">
                 <div className="qr-title">
                   Scan to mark attendance
@@ -230,13 +234,20 @@ export default function Session() {
                   Do not refresh until instructed
                 </div>
               </div>
-            )}
+            )} */}
+
+              {qrData && (
+                <FullscreenQR>
+                  <QRDisplay data={qrData.data} size={800} />
+                </FullscreenQR>
+              )}
+
           </div>
 
           <div className="bottom-controls">
             <button
               className="btn-primary"
-              onClick={() => showQR("START_ACTIVE")}
+              onClick={() => showQR("S")}
               disabled={loading}
             >
               Show START QR
@@ -244,7 +255,7 @@ export default function Session() {
 
             <button
               className="btn-secondary"
-              onClick={() => showQR("END_ACTIVE")}
+              onClick={() => showQR("E")}
               disabled={loading}
             >
               Show END QR

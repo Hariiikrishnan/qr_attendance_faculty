@@ -65,11 +65,17 @@ export default function RecentSessions({ sessions = [] }) {
               >
                 <div className="session-main">
                   <span className="class-name">
-                    {s.className}
+                  {
+                    s.isAudi ? s.sessionId.slice(0,-6) : s.className
+                  }
+                   
                   </span>
-                  <span className="hour-badge">
+                 {
+                  !s.isAudi && 
+                   <span className="hour-badge">
                     Hour {s.hourNumber}
                   </span>
+                  }
                 </div>
 
                 <div className="session-meta">

@@ -1,10 +1,3 @@
-// 10.7289024,79.0199675 - TIFAC Block
-// 10.7279398,79.0202228 - LTC Block
-// 10.7288577,79.020521  - SoC Block
-// 10.7285683,79.0203898 - KRC 
-// 10.7686893,79.1032817 - Home
-
-
 import { useState } from "react";
 import api from "../../api/api";
 import QRDisplay from "../components/QRDisplay";
@@ -13,8 +6,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useFaculty } from "../../context/FacultyContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
-/* ===================== BLOCKS ===================== */
-const BLOCKS = [
+/* ===================== AUDIS ===================== */
+const AUDIS = [
   { id: "A", name: "SoC", lat: 10.7288577, lng: 79.020521 },
   { id: "B", name: "LTC", lat: 10.7279398, lng: 79.0202228 },
   { id: "C", name: "TIFAC", lat: 10.7289024, lng: 79.0199675 },
@@ -22,8 +15,7 @@ const BLOCKS = [
   { id: "Z", name: "HOME", lat: 10.768724, lng: 79.1025933 },
   { id: "F", name: "DD", lat: 11.1282620, lng: 77.3474270 },
 ];
-// 10.768724,79.1025933
-// 11.1282620, 77.3474270
+
 export default function Session() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,19 +24,24 @@ export default function Session() {
   const { faculty, loading: facultyLoading } = useFaculty();
   const facultyData = faculty?.data;
 
-  /* ===================== STATE ===================== */
   const passedClasses = Array.isArray(location.state?.classes)
     ? location.state.classes
     : [];
 
   const [classes] = useState(passedClasses);
+
+  /* ===================== SESSION TYPE ===================== */
+  const [sessionType, setSessionType] = useState("class"); // class | audi
+
+  /* ===================== FORM STATE ===================== */
   const [selectedClass, setSelectedClass] = useState(
     passedClasses[0]?.classId || ""
   );
-  const [selectedBlock, setSelectedBlock] = useState(BLOCKS[0].id);
+  const [selectedAudi, setSelectedAudi] = useState(AUDIS[0].id);
   const [hourNumber, setHourNumber] = useState(1);
   const [qrExpiry, setQrExpiry] = useState(10);
 
+  /* ===================== SESSION STATE ===================== */
   const [session, setSession] = useState(null);
   const [qrData, setQrData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -59,28 +56,11 @@ export default function Session() {
     return <div className="centered">Unauthorized</div>;
   }
 
-  if (!classes.length && !session) {
-    return (
-      <div className="centered">
-        No classes available. Please add a class first.
-      </div>
-    );
-  }
-
-
-  /* ===================== ACTIONS ===================== */
-
+  /* ===================== START SESSION ===================== */
   const startSession = async () => {
-    if (!selectedClass) {
-      setMessage("Please select a class");
-      return;
-    }
-
-    const classObj = classes.find((c) => c.classId === selectedClass);
-    const block = BLOCKS.find((b) => b.id === selectedBlock);
-
-    if (!classObj || !block) {
-      setMessage("Invalid class or block selection");
+    const audi = AUDIS.find((a) => a.id === selectedAudi);
+    if (!audi) {
+      setMessage("Invalid auditorium selection");
       return;
     }
 
@@ -88,19 +68,30 @@ export default function Session() {
       setLoading(true);
       setMessage("");
 
-      const res = await api.post("/faculty/session/start", {
+      const payload = {
         facultyId: facultyData.facultyID,
-        classId: selectedClass,
-        className: classObj.className,
-        blockName: block.name,
-        hourNumber,
+        blockName: audi.name,
         location: {
-          lat: block.lat,
-          lng: block.lng,
+          lat: audi.lat,
+          lng: audi.lng,
         },
-      });
+        isAudi: sessionType === "audi",
+      };
 
-      setSession(res.data);
+      if (sessionType === "class") {
+        const classObj = classes.find((c) => c.classId === selectedClass);
+        if (!classObj) {
+          setMessage("Please select a class");
+          return;
+        }
+
+        payload.classId = selectedClass;
+        payload.className = classObj.className;
+        payload.hourNumber = hourNumber;
+      }
+
+      const res = await api.post("/faculty/session/start", payload);
+      setSession(res.data.data);
     } catch (err) {
       setMessage(err.message || "Failed to create session");
     } finally {
@@ -108,6 +99,7 @@ export default function Session() {
     }
   };
 
+  /* ===================== QR ===================== */
   const showQR = async (type) => {
     if (!session) return;
 
@@ -115,17 +107,13 @@ export default function Session() {
       setLoading(true);
       setMessage("");
 
-
       const res = await api.post("/faculty/session/qr", {
-        sessionId: session.data.sessionId,
+        sessionId: session.sessionId,
         qrExpirySeconds: qrExpiry,
         type,
       });
-      console.log(res);
 
-      setQrData(res.data);
-
-      console.log("QR LENGTH:", JSON.stringify(qrData.data).length);
+      setQrData(res.data.data);
     } catch (err) {
       setMessage(err.message || "Failed to generate QR");
     } finally {
@@ -139,7 +127,7 @@ export default function Session() {
     try {
       setLoading(true);
       await api.post("/faculty/session/close", {
-        sessionId: session.data.sessionId,
+        sessionId: session.sessionId,
       });
       navigate("/dashboard");
     } catch (err) {
@@ -150,50 +138,82 @@ export default function Session() {
   };
 
   /* ===================== UI ===================== */
-
   return (
     <div className="session-page">
       <div className="session-header">
-        <h2 className="session-title">Session Control</h2>
+        <h2 className="session-title">Create Session</h2>
       </div>
 
       {message && <p className="info">{message}</p>}
 
-      {/* ========== CREATE SESSION ========== */}
       {!session && (
         <div className="control-panel">
-          <label>Select Class</label>
-          <select
-            value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
-          >
-            {classes.map((c) => (
-              <option key={c.classId} value={c.classId}>
-                {c.className}
-              </option>
-            ))}
-          </select>
 
-          <label>Select Block</label>
-          <select
-            value={selectedBlock}
-            onChange={(e) => setSelectedBlock(e.target.value)}
-          >
-            {BLOCKS.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
+          {/* ===== PROFESSIONAL SEGMENTED SWITCH ===== */}
+          <div className="segmented-control">
+            <div
+              className={`segment-slider ${
+                sessionType === "audi" ? "right" : "left"
+              }`}
+            />
 
-          <label>Hour Number</label>
+            <button
+              className={`segment-btn ${
+                sessionType === "class" ? "active" : ""
+              }`}
+              onClick={() => setSessionType("class")}
+            >
+              📚 Class Session
+            </button>
+
+            <button
+              className={`segment-btn ${
+                sessionType === "audi" ? "active" : ""
+              }`}
+              onClick={() => setSessionType("audi")}
+            >
+              🎤 Auditorium Session
+            </button>
+          </div>
+
+          {/* ===== CLASS FORM ===== */}
+          {sessionType === "class" && (
+            <>
+              <label>Select Class</label>
+              <select
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+              >
+                {classes.map((c) => (
+                  <option key={c.classId} value={c.classId}>
+                    {c.className}
+                  </option>
+                ))}
+              </select>
+
+              <label>Hour Number</label>
+              <select
+                value={hourNumber}
+                onChange={(e) => setHourNumber(Number(e.target.value))}
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((h) => (
+                  <option key={h} value={h}>
+                    Hour {h}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+
+          {/* ===== COMMON AUDITORIUM SELECT ===== */}
+          <label>Select Auditorium</label>
           <select
-            value={hourNumber}
-            onChange={(e) => setHourNumber(Number(e.target.value))}
+            value={selectedAudi}
+            onChange={(e) => setSelectedAudi(e.target.value)}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((h) => (
-              <option key={h} value={h}>
-                Hour {h}
+            {AUDIS.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
               </option>
             ))}
           </select>
@@ -215,33 +235,24 @@ export default function Session() {
             onClick={startSession}
             disabled={loading}
           >
-            {loading ? "Creating…" : "Create Session"}
+            {loading
+              ? "Creating…"
+              : sessionType === "audi"
+              ? "Create Auditorium Session"
+              : "Create Class Session"}
           </button>
         </div>
       )}
 
-      {/* ========== ACTIVE SESSION ========== */}
+      {/* ===== ACTIVE SESSION ===== */}
       {session && (
         <>
           <div className="qr-stage">
-            {/* {qrData && (
-              <div className="qr-wrapper">
-                <div className="qr-title">
-                  Scan to mark attendance
-                </div>
-                <QRDisplay data={qrData} />
-                <div className="qr-hint">
-                  Do not refresh until instructed
-                </div>
-              </div>
-            )} */}
-
-              {qrData && (
-                <FullscreenQR>
-                  <QRDisplay data={qrData.data} size={800} />
-                </FullscreenQR>
-              )}
-
+            {qrData && (
+              <FullscreenQR>
+                <QRDisplay data={qrData} size={800} />
+              </FullscreenQR>
+            )}
           </div>
 
           <div className="bottom-controls">

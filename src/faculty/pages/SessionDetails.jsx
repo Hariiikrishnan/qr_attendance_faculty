@@ -21,6 +21,8 @@ export default function SessionDetails() {
     (s) => s.status === "PRESENT"
   ).length;
 
+  const isAudiSession = students.length > 0 && !students[0]?.name;
+
   useEffect(() => {
     api
       .get(`/user/session/${sessionId}/attendance/full`)
@@ -202,7 +204,7 @@ export default function SessionDetails() {
             <tr>
               <th>#</th>
               <th>Register No</th>
-              <th>Name</th>
+          {!isAudiSession &&    <th>Name</th> }
               <th>Status</th>
             </tr>
           </thead>
@@ -212,7 +214,7 @@ export default function SessionDetails() {
               <tr key={s.studentId || i}>
                 <td>{i + 1}</td>
                 <td>{s.studentId}</td>
-                <td>{s.name}</td>
+                 {!isAudiSession && <td>{s.name}</td>}
                 <td>
                   {!isEditing ? (
                     <span
